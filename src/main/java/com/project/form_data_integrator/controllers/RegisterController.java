@@ -32,8 +32,11 @@ public class RegisterController {
     @PostMapping("/register")
     public ModelAndView register(@Valid RegistrationDTO registrationDTO, BindingResult bindingResult) throws IOException {
         if(excelService.checkEmail(registrationDTO.email())){
-            System.out.println("");
+            ModelAndView mv = new ModelAndView("register");
+            mv.addObject("emailError", "Excel");
+            return mv;
         }
+
         if(!registrationDTO.password().equals(registrationDTO.confirmPassword())){
             ModelAndView mv = new ModelAndView("register");
             mv.addObject("passwordError", true);

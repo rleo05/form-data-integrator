@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -18,7 +19,21 @@ public class ExcelService {
         if(!new File(FILE_LOCATION).exists()){
             createNewSheet();
         }
-        return true;
+        try(FileInputStream fis = new FileInputStream(FILE_LOCATION);
+            XSSFWorkbook workbook = new XSSFWorkbook(fis)){
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            boolean isFound = false;
+
+            for(Row row : sheet){
+                Cell cell = row.getCell(3);
+                if(cell.getCellType() == CellType.STRING &&
+                        cell.getStringCellValue().equals(email)){
+                    isFound = true;
+                    break;
+                }
+            }
+            return isFound;
+        }
     }
 
     private void createNewSheet() throws IOException {
