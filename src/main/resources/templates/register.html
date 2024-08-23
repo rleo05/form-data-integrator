@@ -97,14 +97,15 @@
                 <div class="invalid-feedback" th:errors="*{password}"></div>
             </div>
             <div class="mb-3">
-                <input class="form-control" type="password" placeholder="Confirm password" th:field="*{confirmPassword}" th:errorclass="is-invalid">
+                <input class="form-control" type="password" placeholder="Confirm password" th:field="*{confirmPassword}" th:errorclass="is-invalid" th:classappend="${passwordError} ? 'is-invalid' : ''">
                 <div class="invalid-feedback" th:errors="*{confirmPassword}"></div>
+                <div class="invalid-feedback" th:if="${passwordError}">Passwords do not match</div>
             </div>
             <label style="display: block;" for="options">Export to:</label>
             <select id="options" th:field="*{exportOption}">
-                <option value="option1">Excel</option>
-                <option value="option2">Postgres</option>
-                <option value="option3">All</option>
+                <option value="excel">Excel</option>
+                <option value="postgres">Postgres</option>
+                <option value="all">All</option>
             </select>
             <button class="btn btn-primary" type="submit">Register user</button>
         </form>
