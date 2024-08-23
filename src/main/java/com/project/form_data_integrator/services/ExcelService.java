@@ -1,15 +1,13 @@
 package com.project.form_data_integrator.services;
 
+import com.project.form_data_integrator.dto.RegistrationDTO;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.AreaReference;
-import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 @Service
 public class ExcelService {
@@ -75,6 +73,26 @@ public class ExcelService {
             emailCell.setCellValue("E-mail");
             passwordCell.setCellValue("Password");
 
+
+            try(FileOutputStream fos = new FileOutputStream(FILE_LOCATION)){
+                workbook.write(fos);
+            }
+        }
+    }
+
+    public void registerNewUser(RegistrationDTO registrationDTO) throws IOException {
+        try(FileInputStream fis = new FileInputStream(FILE_LOCATION);
+        XSSFWorkbook workbook = new XSSFWorkbook(fis)){
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+            int lastRowNum = sheet.getLastRowNum();
+            Row row = sheet.createRow(lastRowNum+1);
+
+            row.createCell(0).setCellValue(registrationDTO.name());
+            row.createCell(1).setCellValue(registrationDTO.phone());
+            row.createCell(2).setCellValue(registrationDTO.country());
+            row.createCell(3).setCellValue(registrationDTO.email());
+            row.createCell(4).setCellValue(registrationDTO.password());
 
             try(FileOutputStream fos = new FileOutputStream(FILE_LOCATION)){
                 workbook.write(fos);

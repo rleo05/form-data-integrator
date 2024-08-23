@@ -48,7 +48,7 @@ public class RegisterController {
         }
 
         if(registrationDTO.exportOption().equals("excel")){
-
+            excelService.registerNewUser(registrationDTO);
         }
 
         return new ModelAndView("redirect:/success");
