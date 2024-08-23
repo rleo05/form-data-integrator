@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 
     <meta charset="UTF-8">
@@ -79,28 +79,28 @@
     <div style="background-color: white; width: 480px; margin-top: 100px; border-radius: 6px; padding: 30px; box-shadow: 2px 2px 3px 1px #3b67e2;">
         <h1 class="title" style="font-size: 1.5em; margin-bottom: 35px">Registration</h1>
 
-        <form class="login-form" action="register" method="POST">
+        <form class="login-form" action="register" method="POST" th:object="${registrationDTO}">
             <div class="form-group">
-                <input class="form-control" type="text" placeholder="Enter the name" id="name" name="name">
+                <input class="form-control" type="text" placeholder="Enter the name" th:field="*{name}">
             </div>
             <div class="form-group">
                 <input class="form-control" type="tel" placeholder="(99) 99999-9999"
-                pattern="\(\d{2}\)\d{4,5}\d{4}">
+                pattern="\(\d{2}\)\d{4,5}\d{4}" th:field="*{phone}">
             </div>
             <div class="form-group">
-                <input class="form-control" type="text" placeholder="Enter the country">
+                <input class="form-control" type="text" placeholder="Enter the country" th:field="*{country}">
             </div>
             <div class="form-group">
-                <input class="form-control" type="email" placeholder="Enter the email">
+                <input class="form-control" type="email" placeholder="Enter the email" th:field="*{email}">
             </div>
             <div class="form-group">
-                <input class="form-control" type="password" placeholder="Enter the password">
+                <input class="form-control" type="password" placeholder="Enter the password" th:field="*{password}">
             </div>
             <div class="form-group">
-                <input class="form-control" type="password" placeholder="Confirm password">
+                <input class="form-control" type="password" placeholder="Confirm password" th:field="*{confirmPassword}">
             </div>
             <label style="display: block;" for="options">Export to:</label>
-            <select id="options">
+            <select id="options" th:field="*{exportOption}">
                 <option value="option1">Excel</option>
                 <option value="option2">Postgres</option>
                 <option value="option3">All</option>
