@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register new user</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .title {
+            position: relative;
+            color: #434a50;
+        }
+        .title::before{
+            content: "";
+            width: 28px;
+            height: 3px;
+            background-color: #4070f4;
+            display: block;
+            position: absolute;
+            top: 29px;
+            left: -2px;
+        }
+
+        .login-form input {
+            padding: 10px;
+            padding-left: 20px;
+            font-size: 16px;
+            box-shadow: 1px 1px #d4cdcd;
+        }
+        .login-form select {
+            margin-bottom: 25px;
+            height: 39px;
+            width: 300px;
+            border: 2px solid #d4cdcd;
+            border-radius: 5px;
+            padding: 5px;
+            color: #212529;
+        }
+
+        .login-form select:focus {
+            outline: none;
+        }
+
+        input:focus {
+            outline: none;
+        }
+
+        .login-form button {
+            width: 100%;
+            background-color: #4070f4;
+            padding: 10px 0;
+            font-weight: bold;
+            border: none;
+        }
+
+        .login-form button:hover {
+            background-color: #0e4bf1;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+    </style>
+</head>
+<body style="background-color: #4070f4;">
+<div style="display: flex; justify-content: center;">
+    <div style="background-color: white; width: 480px; margin-top: 100px; border-radius: 6px; padding: 30px; box-shadow: 2px 2px 3px 1px #3b67e2;">
+        <h1 class="title" style="font-size: 1.5em; margin-bottom: 35px">Registration</h1>
+
+        <form class="login-form" action="register" method="POST">
+            <div class="form-group">
+                <input class="form-control" type="text" placeholder="Enter the name" id="name" name="name">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="tel" placeholder="(99) 99999-9999"
+                pattern="\(\d{2}\)\d{4,5}\d{4}">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" placeholder="Enter the country">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="email" placeholder="Enter the email">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" placeholder="Enter the password">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" placeholder="Confirm password">
+            </div>
+            <label style="display: block;" for="options">Export to:</label>
+            <select id="options">
+                <option value="option1">Excel</option>
+                <option value="option2">Postgres</option>
+                <option value="option3">All</option>
+            </select>
+            <button class="btn btn-primary" type="submit">Register user</button>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
