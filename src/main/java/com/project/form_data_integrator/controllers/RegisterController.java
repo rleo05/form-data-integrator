@@ -3,6 +3,7 @@ package com.project.form_data_integrator.controllers;
 import com.project.form_data_integrator.dto.RegistrationDTO;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,11 @@ public class RegisterController {
     }
 
     @PostMapping
-    public ModelAndView register(@Valid RegistrationDTO registrationDTO){
+    public ModelAndView register(@Valid RegistrationDTO registrationDTO, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return new ModelAndView("register");
+        }
+
         return new ModelAndView("register");
     }
 }
