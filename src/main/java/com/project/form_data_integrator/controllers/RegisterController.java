@@ -23,6 +23,11 @@ public class RegisterController {
         return "success";
     }
 
+    @GetMapping("/excel-error")
+    public String errorExcel(Model model){
+        return "errorExcel";
+    }
+
 
     @GetMapping("/register")
     public ModelAndView registerView(RegistrationDTO registrationDTO){
