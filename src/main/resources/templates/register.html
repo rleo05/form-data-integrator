@@ -94,7 +94,7 @@
                 <div class="invalid-feedback" th:if="${emailError}">Email already registered on <span th:text="${emailError}">A</span></div>
             </div>
             <div class="mb-3">
-                <input class="form-control" type="password" placeholder="Enter the password" th:field="*{password}" th:errorclass="is-invalid">
+                <input class="form-control" type="password" placeholder="Enter the password" th:field="*{password}" th:errorclass="is-invalid" th:classappend="${passwordError} ? 'is-invalid' : ''">
                 <div class="invalid-feedback" th:errors="*{password}"></div>
             </div>
             <div class="mb-3">

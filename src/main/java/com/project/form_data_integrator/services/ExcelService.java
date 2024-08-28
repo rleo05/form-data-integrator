@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -42,7 +43,7 @@ public class ExcelService {
             sheet.setColumnWidth(1, 4000);
             sheet.setColumnWidth(2, 4000);
             sheet.setColumnWidth(3, 7000);
-            sheet.setColumnWidth(4, 4000);
+            sheet.setColumnWidth(4, 17300);
 
             Row row = sheet.createRow(0);
             Cell nameCell = row.createCell(0);
@@ -92,7 +93,7 @@ public class ExcelService {
             row.createCell(1).setCellValue(registrationDTO.phone());
             row.createCell(2).setCellValue(registrationDTO.country());
             row.createCell(3).setCellValue(registrationDTO.email());
-            row.createCell(4).setCellValue(registrationDTO.password());
+            row.createCell(4).setCellValue(BCrypt.hashpw(registrationDTO.password(), BCrypt.gensalt()));
 
             try(FileOutputStream fos = new FileOutputStream(FILE_LOCATION)){
                 workbook.write(fos);
