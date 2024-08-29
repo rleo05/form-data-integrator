@@ -1,6 +1,7 @@
 package com.project.form_data_integrator.controllers;
 
 import com.project.form_data_integrator.dto.RegistrationDTO;
+import com.project.form_data_integrator.service.UserService;
 import com.project.form_data_integrator.services.ExcelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class RegisterController {
     private final ExcelService excelService;
+    private final UserService userService;
 
     @GetMapping("/success")
     public String successView(Model model){
@@ -36,9 +38,21 @@ public class RegisterController {
 
     @PostMapping("/register")
     public ModelAndView register(@Valid RegistrationDTO registrationDTO, BindingResult bindingResult) throws IOException {
-        if(excelService.checkEmail(registrationDTO.email())){
-            ModelAndView mv = new ModelAndView("register");
-            mv.addObject("emailError", "Excel");
+        boolean excelEmail = excelService.checkEmail(registrationDTO.email());
+        boolean postgresEmail = userService.findByEmail(registrationDTO.email()) != null;
+        String exportOpinion = registrationDTO.exportOption();
+        if(excelEmail || postgresEmail){
+            ModelAndView mv = new ModelAndView();
+            mv.addObject("anyError", true);
+            if(excelEmail && postgresEmail && exportOpinion.equals("all")){
+                mv.addObject("allEmails", true);
+                return mv;
+            }
+            if(excelEmail && exportOpinion.equals("excel")) {
+                mv.addObject("excelEmail", true);
+                return mv;
+            }
+            mv.addObject("postgresEmail", true);
             return mv;
         }
 
@@ -52,8 +66,17 @@ public class RegisterController {
             return new ModelAndView("register");
         }
 
-        if(registrationDTO.exportOption().equals("excel")){
+        if(exportOpinion.equals("excel")){
             excelService.registerNewUser(registrationDTO);
+        }
+
+        if(exportOpinion.equals("postgres")){
+            userService.registerNewUser(registrationDTO);
+        }
+
+        if(exportOpinion.equals("all")){
+            excelService.registerNewUser(registrationDTO);
+            userService.registerNewUser(registrationDTO);
         }
 
         return new ModelAndView("redirect:/success");
