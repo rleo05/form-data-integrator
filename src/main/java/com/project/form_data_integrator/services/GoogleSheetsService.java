@@ -16,7 +16,6 @@ import com.google.api.services.sheets.v4.model.*;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +52,8 @@ public class GoogleSheetsService {
                 .execute();
 
         List<List<Object>> values = valueRange.getValues();
+        if(values == null) return false;
+
         for (List<Object> row : values) {
             if(row.getFirst().equals(email)){
                 return true;
