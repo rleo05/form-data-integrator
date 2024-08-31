@@ -1,7 +1,8 @@
 package com.project.form_data_integrator.controllers;
 
 import com.project.form_data_integrator.dto.RegistrationDTO;
-import com.project.form_data_integrator.service.UserService;
+import com.project.form_data_integrator.services.GoogleSheetsService;
+import com.project.form_data_integrator.services.UserService;
 import com.project.form_data_integrator.services.ExcelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 @Controller
 @RequiredArgsConstructor
 public class RegisterController {
     private final ExcelService excelService;
     private final UserService userService;
+    private final GoogleSheetsService googleSheetsService;
 
     @GetMapping("/success")
     public String successView(Model model){
@@ -32,7 +35,8 @@ public class RegisterController {
 
 
     @GetMapping("/register")
-    public ModelAndView registerView(RegistrationDTO registrationDTO){
+    public ModelAndView registerView(RegistrationDTO registrationDTO) throws GeneralSecurityException, IOException {
+        System.out.println(googleSheetsService.createSheet());
         return new ModelAndView("register");
     }
 

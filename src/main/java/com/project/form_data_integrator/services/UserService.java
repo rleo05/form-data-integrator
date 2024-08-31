@@ -1,4 +1,4 @@
-package com.project.form_data_integrator.service;
+package com.project.form_data_integrator.services;
 
 import com.project.form_data_integrator.domain.User;
 import com.project.form_data_integrator.dto.RegistrationDTO;
