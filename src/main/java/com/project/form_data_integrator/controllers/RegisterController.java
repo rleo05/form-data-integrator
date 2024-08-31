@@ -36,14 +36,14 @@ public class RegisterController {
 
     @GetMapping("/register")
     public ModelAndView registerView(RegistrationDTO registrationDTO) throws GeneralSecurityException, IOException {
-        System.out.println(googleSheetsService.createSheet());
         return new ModelAndView("register");
     }
 
     @PostMapping("/register")
-    public ModelAndView register(@Valid RegistrationDTO registrationDTO, BindingResult bindingResult) throws IOException {
+    public ModelAndView register(@Valid RegistrationDTO registrationDTO, BindingResult bindingResult) throws IOException, GeneralSecurityException {
         boolean excelEmail = excelService.checkEmail(registrationDTO.email());
         boolean postgresEmail = userService.findByEmail(registrationDTO.email()) != null;
+        boolean googleSheetsEmail = googleSheetsService.checkEmail(registrationDTO.email());
         String exportOpinion = registrationDTO.exportOption();
         if(excelEmail || postgresEmail){
             ModelAndView mv = new ModelAndView();

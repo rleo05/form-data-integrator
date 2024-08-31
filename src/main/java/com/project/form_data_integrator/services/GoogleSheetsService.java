@@ -15,10 +15,7 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -27,31 +24,45 @@ import java.util.List;
 
 @Service
 public class GoogleSheetsService {
+    private static final String FILE_LOCATION = "src/main/java/com/project/form_data_integrator/googleFile/googlesheetid.txt";
     private  final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
-    public void start() throws IOException, GeneralSecurityException {
-        final String spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms";
-        final String range = "Class Data!A2:E";
+    public boolean checkEmail(String email) throws GeneralSecurityException, IOException {
+        File googleFile = new File(FILE_LOCATION);
+        if(!googleFile.exists()){
+            createSheet();
+        }
+
+        String sheetId = "";
+        try(FileReader fr = new FileReader(googleFile)){
+            BufferedReader br = new BufferedReader(fr);
+            String row;
+            while((row = br.readLine()) != null){
+                sheetId = row;
+            }
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+        final String range = "Register Sheet 1!D2:D";
 
         Sheets service = getSheetsService();
 
-        ValueRange response = service.spreadsheets().values()
-                .get(spreadsheetId, range)
+        ValueRange valueRange = service.spreadsheets().values()
+                .get(sheetId, range)
                 .execute();
-        List<List<Object>> values = response.getValues();
-        if (values == null || values.isEmpty()) {
-            System.out.println("No data found.");
-        } else {
-            System.out.println("Name, Major");
-            for (List<Object> row : values) {
 
-                // Print columns A and E, which correspond to indices 0 and 4.
-                System.out.printf("%s, %s\n", row.get(0), row.get(4));
+        List<List<Object>> values = valueRange.getValues();
+        for (List<Object> row : values) {
+            if(row.getFirst().equals(email)){
+                return true;
             }
         }
+
+        return false;
     }
 
-    public String createSheet() throws GeneralSecurityException, IOException {
+    public void createSheet() throws GeneralSecurityException, IOException {
         Sheets sheetsService = getSheetsService();
         SpreadsheetProperties spreadsheetProperties = new SpreadsheetProperties();
         spreadsheetProperties.setTitle("Users registration");
@@ -59,9 +70,29 @@ public class GoogleSheetsService {
         sheetProperties.setTitle("Register Sheet 1");
         Sheet sheet = new Sheet().setProperties(sheetProperties);
         Spreadsheet spreadsheet = new Spreadsheet().setProperties(spreadsheetProperties).setSheets(Collections.singletonList(sheet));
-        return sheetsService.spreadsheets().create(spreadsheet).execute().getSpreadsheetUrl();
-    }
+        String spreadsheetId = sheetsService.spreadsheets().create(spreadsheet).execute().getSpreadsheetId();
+        File googleFile = new File(FILE_LOCATION);
+        googleFile.createNewFile();
+        try(FileWriter fw = new FileWriter(googleFile)){
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(spreadsheetId);
+            bw.flush();
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
 
+        List<List<Object>> header = List.of(
+                Arrays.asList("Name", "Phone", "Country", "Email", "Password")
+        );
+
+        ValueRange valueRange = new ValueRange().setRange("Register Sheet 1!A1:E1")
+                .setValues(header);
+
+        sheetsService.spreadsheets().values()
+                .update(spreadsheetId, valueRange.getRange(), valueRange)
+                .setValueInputOption("RAW")
+                .execute();
+    }
 
     //creating credentials
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)

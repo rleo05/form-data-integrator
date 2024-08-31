@@ -19,6 +19,7 @@ target/
 *.iml
 *.ipr
 src/main/resources/credentials.json
+tokens
 
 ### NetBeans ###
 /nbproject/private/
