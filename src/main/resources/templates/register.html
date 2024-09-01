@@ -93,7 +93,8 @@
                 <div class="invalid-feedback" th:errors="*{email}"></div>
                 <div class="invalid-feedback" th:if="${excelEmail}">Email already registered on Excel</div>
                 <div class="invalid-feedback" th:if="${postgresEmail}">Email already registered on Postgres</div>
-                <div class="invalid-feedback" th:if="${allEmails}">Email already registered on Excel and Postgres</div>
+                <div class="invalid-feedback" th:if="${gsheetsEmail}">Email already registered on Google Sheets</div>
+                <div class="invalid-feedback" th:if="${allEmails}">Email already registered on Excel, Postgres and Google Sheets</div>
             </div>
             <div class="mb-3">
                 <input class="form-control" type="password" placeholder="Enter the password" th:field="*{password}" th:errorclass="is-invalid" th:classappend="${passwordError} ? 'is-invalid' : ''">

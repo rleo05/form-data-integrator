@@ -45,10 +45,10 @@ public class RegisterController {
         boolean postgresEmail = userService.findByEmail(registrationDTO.email()) != null;
         boolean googleSheetsEmail = googleSheetsService.checkEmail(registrationDTO.email());
         String exportOpinion = registrationDTO.exportOption();
-        if(excelEmail || postgresEmail){
+        if(excelEmail || postgresEmail || googleSheetsEmail){
             ModelAndView mv = new ModelAndView();
             mv.addObject("anyError", true);
-            if(excelEmail && postgresEmail && exportOpinion.equals("all")){
+            if(excelEmail && postgresEmail && googleSheetsEmail && exportOpinion.equals("all")){
                 mv.addObject("allEmails", true);
                 return mv;
             }
@@ -60,6 +60,8 @@ public class RegisterController {
                 mv.addObject("postgresEmail", true);
                 return mv;
             }
+            mv.addObject("gsheetsEmail", true);
+            return mv;
         }
 
         if(!registrationDTO.password().equals(registrationDTO.confirmPassword())){
@@ -87,8 +89,8 @@ public class RegisterController {
         if(exportOpinion.equals("all")){
             excelService.registerNewUser(registrationDTO);
             userService.registerNewUser(registrationDTO);
+            googleSheetsService.registerNewUser(registrationDTO);
         }
-
         return new ModelAndView("redirect:/success");
     }
 }
