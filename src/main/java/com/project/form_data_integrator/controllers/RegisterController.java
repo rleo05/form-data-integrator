@@ -56,8 +56,10 @@ public class RegisterController {
                 mv.addObject("excelEmail", true);
                 return mv;
             }
-            mv.addObject("postgresEmail", true);
-            return mv;
+            if(postgresEmail && exportOpinion.equals("postgres")){
+                mv.addObject("postgresEmail", true);
+                return mv;
+            }
         }
 
         if(!registrationDTO.password().equals(registrationDTO.confirmPassword())){
@@ -76,6 +78,10 @@ public class RegisterController {
 
         if(exportOpinion.equals("postgres")){
             userService.registerNewUser(registrationDTO);
+        }
+
+        if(exportOpinion.equals("gsheets")){
+            googleSheetsService.registerNewUser(registrationDTO);
         }
 
         if(exportOpinion.equals("all")){

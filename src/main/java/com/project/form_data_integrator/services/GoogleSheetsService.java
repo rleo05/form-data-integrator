@@ -13,6 +13,8 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
+import com.project.form_data_integrator.dto.RegistrationDTO;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -32,16 +34,8 @@ public class GoogleSheetsService {
             createSheet();
         }
 
-        String sheetId = "";
-        try(FileReader fr = new FileReader(googleFile)){
-            BufferedReader br = new BufferedReader(fr);
-            String row;
-            while((row = br.readLine()) != null){
-                sheetId = row;
-            }
-        } catch (IOException e){
-            throw new RuntimeException(e);
-        }
+        String sheetId = getSheetId();
+
 
         final String range = "Register Sheet 1!D2:D";
 
@@ -61,6 +55,28 @@ public class GoogleSheetsService {
         }
 
         return false;
+    }
+
+    public void registerNewUser(RegistrationDTO request) throws GeneralSecurityException, IOException {
+        int emptyRow = getEmptyRow();
+        Sheets service = getSheetsService();
+        String sheetId = getSheetId();
+
+        List<List<Object>> values = List.of(
+                Arrays.asList(request.name(), request.phone(), request.country(),
+                        request.email(), BCrypt.hashpw(request.password(), BCrypt.gensalt()))
+        );
+
+        String range = STR."Register Sheet 1!A\{emptyRow}";
+
+        ValueRange valueRange = new ValueRange()
+                .setRange(range)
+                .setValues(values);
+
+        service.spreadsheets().values()
+                .update(sheetId, valueRange.getRange(), valueRange)
+                .setValueInputOption("RAW")
+                .execute();
     }
 
     public void createSheet() throws GeneralSecurityException, IOException {
@@ -126,5 +142,33 @@ public class GoogleSheetsService {
         return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+    }
+
+    private int getEmptyRow() throws GeneralSecurityException, IOException {
+        String sheetId = getSheetId();
+        Sheets service = getSheetsService();
+        String range = "Register Sheet 1!A:A";
+
+        ValueRange valueRange = service.spreadsheets().values()
+                .get(sheetId, range)
+                .execute();
+
+        List<List<Object>> values = valueRange.getValues();
+
+        return values.size() + 1;
+    }
+
+    private static String getSheetId() {
+        String id = "";
+        try(FileReader fr = new FileReader(FILE_LOCATION)){
+            BufferedReader br = new BufferedReader(fr);
+            String row;
+            while((row = br.readLine()) != null){
+                id = row;
+            }
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        return id;
     }
 }
